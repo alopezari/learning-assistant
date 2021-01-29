@@ -1,0 +1,357 @@
+{
+	"info": {
+		"_postman_id": "328ef565-4cbd-4894-b47a-a09b59681134",
+		"name": "Environment UID Finder",
+		"description": "This collection lets you retrieve the UID of the Postman environment that is currently active in your Postman IDE and store it in this environment.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get current environment UID - Successful request",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"There is at least one environment\", function () {\r",
+							"    pm.expect(pm.response.json().environments.length).greaterThan(0);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"let environmentUid = getCurrentEnvironmentUid(pm.response.json().environments);\r",
+							"pm.environment.set(\"postmanEnvironmentUid\", environmentUid);\r",
+							"\r",
+							"\r",
+							"function getCurrentEnvironmentUid(environments) {\r",
+							"    currentEnvironment = environments.find(environment => pm.environment.id.includes(environment.id));\r",
+							"    return currentEnvironment.uid;\r",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "X-Api-Key",
+						"value": "{{postmanApiKey}}",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "https://api.getpostman.com/environments",
+					"protocol": "https",
+					"host": [
+						"api",
+						"getpostman",
+						"com"
+					],
+					"path": [
+						"environments"
+					]
+				},
+				"description": "Retrieves the UID of your current Postman environment.\r\n\r\nTo do this, it sends a GET request to the Postman API.\r\n\r\nYou can find more information about the Postman API [here](https://www.postman.com/postman/workspace/postman-public-workspace/documentation/12959542-c8142d51-e97c-46b6-bd77-52bb66712c9a#6517e0d6-3bc3-3da5-ab57-7a578a8504ce).\r\n\r\n## Input variables\r\n- **postmanApiKey**: You need an api key from _Postman API_ for this request to succeed. You can find more information in the Postman API documentation, which is linked in the description of this request. **Mandatory**."
+			},
+			"response": [
+				{
+					"name": "Get current environment UID",
+					"originalRequest": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "{{postmanApiKey}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "https://api.getpostman.com/environments",
+							"protocol": "https",
+							"host": [
+								"api",
+								"getpostman",
+								"com"
+							],
+							"path": [
+								"environments"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 24 Jan 2021 08:43:14 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"2f1-BEtAzWbx/nK8qapsbdkmJNIQN+E\""
+						},
+						{
+							"key": "Server",
+							"value": "nginx"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-frame-options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-RateLimit-Limit",
+							"value": "60"
+						},
+						{
+							"key": "X-RateLimit-Remaining",
+							"value": "59"
+						},
+						{
+							"key": "X-RateLimit-Reset",
+							"value": "1611477854"
+						},
+						{
+							"key": "x-srv-span",
+							"value": "v=1;s=982dce62b328a108"
+						},
+						{
+							"key": "x-srv-trace",
+							"value": "v=1;t=ab77753f644f6866"
+						},
+						{
+							"key": "Content-Length",
+							"value": "308"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"environments\": [\n        {\n            \"id\": \"99999999-9999-9999-9999-999999999999\",\n            \"name\": \"Learning Assistant - Test\",\n            \"owner\": \"9999999\",\n            \"uid\": \"9999999-99999999-9999-9999-9999-999999999999\"\n        }\n    ]\n}"
+				}
+			]
+		},
+		{
+			"name": "Persist environment UID",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.environment.set(\"postmanEnvironment\", JSON.stringify(getCurrentEnvironment()));\r",
+							"\r",
+							"function getCurrentEnvironment() {\r",
+							"    return {\"environment\": pm.environment.toJSON()};\r",
+							"}\r",
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Environment UID is properly saved in current environment\", function () {\r",
+							"    pm.expect(pm.response.json().environment.uid).to.eql(pm.environment.get(\"postmanEnvironmentUid\"));\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "X-Api-Key",
+						"value": "{{postmanApiKey}}",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{{postmanEnvironment}}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api.getpostman.com/environments/{{postmanEnvironmentUid}}",
+					"protocol": "https",
+					"host": [
+						"api",
+						"getpostman",
+						"com"
+					],
+					"path": [
+						"environments",
+						"{{postmanEnvironmentUid}}"
+					]
+				},
+				"description": "Persist the environment UID acquired previously so that it is included in the active Postman environment each time it is retrieved by the Postman API.\r\n\r\nTo accomplish this, it sends a PUT request to the Postman API.\r\n\r\nYou can find more information about the Postman API [here](https://www.postman.com/postman/workspace/postman-public-workspace/documentation/12959542-c8142d51-e97c-46b6-bd77-52bb66712c9a#6517e0d6-3bc3-3da5-ab57-7a578a8504ce).\r\n\r\n## Input variables\r\n- **postmanApiKey**: You need an api key from _Postman API_ for this request to succeed. You can find more information in the Postman API documentation, which is linked in the description of this request. **Mandatory**."
+			},
+			"response": [
+				{
+					"name": "Persist environment UID - Successful request",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "X-Api-Key",
+								"value": "{{postmanApiKey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{{postmanEnvironment}}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://api.getpostman.com/environments/{{postmanEnvironmentUid}}",
+							"protocol": "https",
+							"host": [
+								"api",
+								"getpostman",
+								"com"
+							],
+							"path": [
+								"environments",
+								"{{postmanEnvironmentUid}}"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Access-Control-Allow-Origin",
+							"value": "*"
+						},
+						{
+							"key": "Content-Encoding",
+							"value": "gzip"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json; charset=utf-8"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 24 Jan 2021 08:45:22 GMT"
+						},
+						{
+							"key": "ETag",
+							"value": "W/\"95-r90R8DaTC6xHSK/FlJMpmhut5p0\""
+						},
+						{
+							"key": "Server",
+							"value": "nginx"
+						},
+						{
+							"key": "Vary",
+							"value": "Accept-Encoding"
+						},
+						{
+							"key": "x-frame-options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-RateLimit-Limit",
+							"value": "60"
+						},
+						{
+							"key": "X-RateLimit-Remaining",
+							"value": "59"
+						},
+						{
+							"key": "X-RateLimit-Reset",
+							"value": "1611477981"
+						},
+						{
+							"key": "x-srv-span",
+							"value": "v=1;s=bec0b5cfba7d8e19"
+						},
+						{
+							"key": "x-srv-trace",
+							"value": "v=1;t=3538b6382d690b9f"
+						},
+						{
+							"key": "Content-Length",
+							"value": "125"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"environment\": {\n        \"id\": \"99999999-9999-9999-9999-999999999999\",\n        \"name\": \"Learning Assistant - Test\",\n        \"uid\": \"9999999-99999999-9999-9999-9999-999999999999\"\n    }\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
